@@ -194,7 +194,8 @@ android {
 			isShrinkResources = true
 			signingConfig = signingConfigs.getByName(if (hasReleaseSigning) "release" else "debug")
 			proguardFiles(
-				getDefaultProguardFile("proguard-android-optimize.txt")
+				getDefaultProguardFile("proguard-android-optimize.txt"),
+				"proguard-rules.pro"
 			)
 		}
 
