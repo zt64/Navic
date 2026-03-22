@@ -68,11 +68,11 @@ import paige.navic.ui.components.layouts.RootBottomBar
 import paige.navic.ui.components.layouts.RootTopBar
 import paige.navic.ui.components.layouts.horizontalSection
 import paige.navic.ui.screens.artist.ArtistsScreenItem
-import paige.navic.ui.screens.genres.GenreCard
+import paige.navic.ui.screens.genres.components.GenreListScreenCard
 import paige.navic.ui.theme.defaultFont
 import paige.navic.ui.viewmodels.AlbumsViewModel
 import paige.navic.ui.screens.artist.viewmodels.ArtistListViewModel
-import paige.navic.ui.viewmodels.GenresViewModel
+import paige.navic.ui.screens.genres.viewmodels.GenreListViewModel
 import paige.navic.ui.viewmodels.PlaylistsViewModel
 import paige.navic.utils.LocalBottomBarScrollManager
 import paige.navic.utils.UiState
@@ -87,12 +87,12 @@ fun LibraryScreen(
 	},
 	playlistsViewModel: PlaylistsViewModel = viewModel { PlaylistsViewModel() },
 	artistListViewModel: ArtistListViewModel = viewModel { ArtistListViewModel() },
-	genresViewModel: GenresViewModel = viewModel { GenresViewModel() }
+	genreListViewModel: GenreListViewModel = viewModel { GenreListViewModel() }
 ) {
 	val recentsState by albumsViewModel.albumsState.collectAsState()
 	val playlistsState by playlistsViewModel.playlistsState.collectAsState()
 	val artistsState by artistListViewModel.artistsState.collectAsState()
-	val genresState by genresViewModel.genresState.collectAsState()
+	val genresState by genreListViewModel.genresState.collectAsState()
 
 	val gridState = albumsViewModel.gridState
 
@@ -130,7 +130,7 @@ fun LibraryScreen(
 				albumsViewModel.refreshAlbums()
 				playlistsViewModel.refreshPlaylists()
 				artistListViewModel.refreshArtists()
-				genresViewModel.refreshGenres()
+				genreListViewModel.refreshGenres()
 			}
 		) {
 			LazyVerticalGrid(
@@ -228,7 +228,7 @@ fun LibraryScreen(
 						key = { it.genre.name },
 						seeAll = true
 					) { genre ->
-						GenreCard(genre = genre)
+						GenreListScreenCard(genre = genre)
 					}
 				}
 			}

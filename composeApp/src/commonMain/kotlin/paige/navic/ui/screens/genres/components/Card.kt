@@ -1,4 +1,4 @@
-package paige.navic.ui.screens.genres
+package paige.navic.ui.screens.genres.components
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -14,14 +14,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
@@ -40,11 +36,11 @@ import paige.navic.data.session.SessionManager
 import paige.navic.data.session.SessionManager.getCoverArtUrl
 import paige.navic.ui.components.common.CoverArt
 import paige.navic.ui.theme.defaultFont
-import paige.navic.ui.viewmodels.GenreWithAlbums
+import paige.navic.ui.screens.genres.viewmodels.GenreWithAlbums
 import kotlin.math.abs
 
 @Composable
-fun GenreCard(
+fun GenreListScreenCard(
 	modifier: Modifier = Modifier,
 	genre: GenreWithAlbums
 ) {

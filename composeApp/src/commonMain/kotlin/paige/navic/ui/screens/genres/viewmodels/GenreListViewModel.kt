@@ -1,4 +1,4 @@
-package paige.navic.ui.viewmodels
+package paige.navic.ui.screens.genres.viewmodels
 
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.lifecycle.ViewModel
@@ -21,7 +21,7 @@ data class GenreWithAlbums(
 	val albums: List<Album>
 )
 
-class GenresViewModel : ViewModel() {
+class GenreListViewModel : ViewModel() {
 	private val _isRefreshing = MutableStateFlow(false)
 	val isRefreshing = _isRefreshing.asStateFlow()
 

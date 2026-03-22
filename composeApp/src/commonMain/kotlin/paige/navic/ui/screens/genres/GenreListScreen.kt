@@ -33,16 +33,18 @@ import paige.navic.ui.components.layouts.NestedTopBar
 import paige.navic.ui.components.layouts.RootBottomBar
 import paige.navic.ui.components.layouts.RootTopBar
 import paige.navic.ui.components.layouts.artGridError
-import paige.navic.ui.viewmodels.GenresViewModel
+import paige.navic.ui.screens.genres.components.GenreListScreenCard
+import paige.navic.ui.screens.genres.components.GenreListScreenCardPlaceholder
+import paige.navic.ui.screens.genres.viewmodels.GenreListViewModel
 import paige.navic.utils.LocalBottomBarScrollManager
 import paige.navic.utils.UiState
 import paige.navic.utils.withoutTop
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GenresScreen(
+fun GenreListScreen(
 	nested: Boolean,
-	viewModel: GenresViewModel = viewModel { GenresViewModel() }
+	viewModel: GenreListViewModel = viewModel { GenreListViewModel() }
 ) {
 	val state by viewModel.genresState.collectAsState()
 	val isRefreshing by viewModel.isRefreshing.collectAsState()
@@ -95,10 +97,10 @@ fun GenresScreen(
 				) {
 					when (state) {
 						is UiState.Error -> artGridError(state)
-						is UiState.Loading -> items(10) { GenreCardPlaceholder() }
+						is UiState.Loading -> items(10) { GenreListScreenCardPlaceholder() }
 						is UiState.Success -> {
 							items(state.data, { it.genre.name }) { genre ->
-								GenreCard(genre = genre)
+								GenreListScreenCard(genre = genre)
 							}
 							if (state.data.isEmpty()) {
 								item(span = { GridItemSpan(maxLineSpan) }) {

@@ -79,7 +79,7 @@ import paige.navic.ui.screens.PlaylistsScreen
 import paige.navic.ui.screens.QueueScreen
 import paige.navic.ui.screens.search.SearchScreen
 import paige.navic.ui.screens.SharesScreen
-import paige.navic.ui.screens.genres.GenresScreen
+import paige.navic.ui.screens.genres.GenreListScreen
 import paige.navic.ui.screens.settings.BottomBarScreen
 import paige.navic.ui.screens.settings.FontsScreen
 import paige.navic.ui.screens.settings.SettingsAboutScreen
@@ -241,7 +241,7 @@ private fun entryProvider(
 			ArtistListScreen(key.nested)
 		}
 		entry<Screen.Genres>(metadata = navtabMetadata) { key ->
-			GenresScreen(key.nested)
+			GenreListScreen(key.nested)
 		}
 
 		// misc
