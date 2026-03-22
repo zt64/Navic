@@ -11,6 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -35,6 +36,7 @@ import paige.navic.icons.outlined.MoreHoriz
 import paige.navic.icons.outlined.PlaylistAdd
 import paige.navic.ui.components.common.Dropdown
 import paige.navic.ui.components.common.DropdownItem
+import paige.navic.ui.components.dialogs.PlaylistUpdateDialog
 
 @Composable
 fun NowPlayingMoreButton() {
@@ -43,6 +45,8 @@ fun NowPlayingMoreButton() {
 	val player = LocalMediaPlayer.current
 	val playerState by player.uiState.collectAsState()
 	val track = playerState.currentTrack
+	var playlistDialogShown by rememberSaveable { mutableStateOf(false) }
+
 	Box {
 		var expanded by remember { mutableStateOf(false) }
 		IconButton(
@@ -96,11 +100,8 @@ fun NowPlayingMoreButton() {
 			)
 			DropdownItem(
 				onClick = {
-					track?.let { track ->
-						expanded = false
-						backStack.remove(Screen.NowPlaying)
-						backStack.add(Screen.AddToPlaylist(listOf(track)))
-					}
+					expanded = false
+					playlistDialogShown = true
 				},
 				text = { Text(stringResource(Res.string.action_add_to_playlist)) },
 				leadingIcon = { Icon(Icons.Outlined.PlaylistAdd, null) }
@@ -117,5 +118,13 @@ fun NowPlayingMoreButton() {
 				leadingIcon = { Icon(Icons.Outlined.Info, null) }
 			)
 		}
+	}
+
+	if (playlistDialogShown && track != null) {
+		@Suppress("AssignedValueIsNeverRead")
+		PlaylistUpdateDialog(
+			tracks = listOf(track),
+			onDismissRequest = { playlistDialogShown = false }
+		)
 	}
 }

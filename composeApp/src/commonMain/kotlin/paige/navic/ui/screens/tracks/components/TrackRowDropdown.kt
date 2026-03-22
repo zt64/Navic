@@ -4,6 +4,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import dev.zt64.subsonic.api.model.Playlist
 import dev.zt64.subsonic.api.model.Song
 import dev.zt64.subsonic.api.model.SongCollection
@@ -27,6 +31,7 @@ import paige.navic.icons.outlined.Share
 import paige.navic.icons.outlined.Star
 import paige.navic.ui.components.common.Dropdown
 import paige.navic.ui.components.common.DropdownItem
+import paige.navic.ui.components.dialogs.PlaylistUpdateDialog
 import paige.navic.utils.UiState
 
 @Composable
@@ -42,6 +47,8 @@ fun TrackRowDropdown(
 	starredState: UiState<Boolean>,
 ) {
 	val backStack = LocalNavStack.current
+	var playlistDialogShown by rememberSaveable { mutableStateOf(false) }
+
 	Dropdown(
 		expanded = expanded,
 		onDismissRequest = onDismissRequest
@@ -112,16 +119,7 @@ fun TrackRowDropdown(
 			},
 			onClick = {
 				onDismissRequest()
-				if (backStack.lastOrNull() !is Screen.AddToPlaylist) {
-					backStack.add(
-						Screen.AddToPlaylist(
-							listOf(track),
-							playlistToExclude = if (tracks is Playlist)
-								tracks.id
-							else null
-						)
-					)
-				}
+				playlistDialogShown = true
 			},
 		)
 		if (tracks is Playlist) {
@@ -139,5 +137,16 @@ fun TrackRowDropdown(
 				},
 			)
 		}
+	}
+
+	if (playlistDialogShown && track != null) {
+		@Suppress("AssignedValueIsNeverRead")
+		PlaylistUpdateDialog(
+			tracks = listOf(track),
+			playlistToExclude = if (tracks is Playlist)
+				tracks.id
+			else null,
+			onDismissRequest = { playlistDialogShown = false }
+		)
 	}
 }

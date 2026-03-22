@@ -32,6 +32,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.TransformOrigin
@@ -72,6 +73,7 @@ import paige.navic.ui.components.common.SelectionDropdown
 import paige.navic.ui.components.common.SelectionDropdownItem
 import paige.navic.ui.components.dialogs.DeletionDialog
 import paige.navic.ui.components.dialogs.DeletionEndpoint
+import paige.navic.ui.components.dialogs.PlaylistCreateDialog
 import paige.navic.ui.components.dialogs.ShareDialog
 import paige.navic.ui.components.layouts.ArtGrid
 import paige.navic.ui.components.layouts.ArtGridItem
@@ -94,7 +96,6 @@ fun PlaylistsScreen(
 	viewModel: PlaylistsViewModel = viewModel { PlaylistsViewModel() }
 ) {
 	val ctx = LocalCtx.current
-	val backStack = LocalNavStack.current
 
 	val playlistsState by viewModel.playlistsState.collectAsState()
 	val isRefreshing by viewModel.isRefreshing.collectAsState()
@@ -107,6 +108,8 @@ fun PlaylistsScreen(
 
 	val slideSpec = MaterialTheme.motionScheme.defaultSpatialSpec<IntOffset>()
 	val scaleInSpec = MaterialTheme.motionScheme.fastSpatialSpec<Float>()
+
+	var createDialogShown by rememberSaveable { mutableStateOf(false) }
 
 	Scaffold(
 		topBar = {
@@ -145,9 +148,7 @@ fun PlaylistsScreen(
 						containerColor = MaterialTheme.colorScheme.primary,
 						onClick = {
 							ctx.clickSound()
-							if (backStack.lastOrNull() !is Screen.CreatePlaylist) {
-								backStack.add(Screen.CreatePlaylist())
-							}
+							createDialogShown = true
 						}
 					) {
 						Icon(
@@ -237,6 +238,11 @@ fun PlaylistsScreen(
 		id = deletionId,
 		onIdClear = { deletionId = null }
 	)
+
+	if (createDialogShown) {
+		@Suppress("AssignedValueIsNeverRead")
+		PlaylistCreateDialog(onDismissRequest = { createDialogShown = false })
+	}
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)

@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalUriHandler
 import dev.zt64.subsonic.api.model.AlbumInfo
@@ -24,8 +25,6 @@ import navic.composeapp.generated.resources.action_share
 import navic.composeapp.generated.resources.action_view_on_lastfm
 import navic.composeapp.generated.resources.action_view_on_musicbrainz
 import org.jetbrains.compose.resources.stringResource
-import paige.navic.LocalNavStack
-import paige.navic.data.models.Screen
 import paige.navic.icons.Icons
 import paige.navic.icons.brand.Lastfm
 import paige.navic.icons.brand.Musicbrainz
@@ -34,6 +33,7 @@ import paige.navic.icons.outlined.PlaylistAdd
 import paige.navic.icons.outlined.Share
 import paige.navic.ui.components.common.Dropdown
 import paige.navic.ui.components.common.DropdownItem
+import paige.navic.ui.components.dialogs.PlaylistUpdateDialog
 import paige.navic.ui.components.layouts.NestedTopBar
 import paige.navic.ui.components.layouts.TopBarButton
 import paige.navic.utils.UiState
@@ -46,8 +46,9 @@ fun TracksScreenTopBar(
 	scrolled: Boolean,
 	onSetShareId: (shareId: String?) -> Unit
 ) {
-	val backStack = LocalNavStack.current
 	val uriHandler = LocalUriHandler.current
+	var playlistDialogShown by rememberSaveable { mutableStateOf(false) }
+
 	NestedTopBar(
 		title = {
 			AnimatedVisibility(
@@ -117,17 +118,19 @@ fun TracksScreenTopBar(
 						enabled = tracks is UiState.Success,
 						onClick = {
 							expanded = false
-							if (backStack.lastOrNull() !is Screen.AddToPlaylist) {
-								backStack.add(
-									Screen.AddToPlaylist(
-										(tracks as? UiState.Success)?.data?.songs.orEmpty()
-									)
-								)
-							}
+							playlistDialogShown = true
 						},
 					)
 				}
 			}
 		}
 	)
+
+	if (playlistDialogShown) {
+		@Suppress("AssignedValueIsNeverRead")
+		PlaylistUpdateDialog(
+			tracks = (tracks as? UiState.Success)?.data?.songs.orEmpty(),
+			onDismissRequest = { playlistDialogShown = false }
+		)
+	}
 }

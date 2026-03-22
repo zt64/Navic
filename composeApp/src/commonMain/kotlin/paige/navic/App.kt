@@ -69,11 +69,9 @@ import paige.navic.shared.rememberShareManager
 import paige.navic.ui.components.dialogs.SideloadingDialog
 import paige.navic.ui.navigation.Material3Transitions
 import paige.navic.ui.scenes.BottomSheetSceneStrategy
-import paige.navic.ui.screens.AddToPlaylistScreen
 import paige.navic.ui.screens.AlbumsScreen
 import paige.navic.ui.screens.ArtistScreen
 import paige.navic.ui.screens.ArtistsScreen
-import paige.navic.ui.screens.CreatePlaylistScreen
 import paige.navic.ui.screens.LibraryScreen
 import paige.navic.ui.screens.LyricsScreen
 import paige.navic.ui.screens.nowPlaying.NowPlayingScreen
@@ -278,12 +276,6 @@ private fun entryProvider(
 		}
 		entry<Screen.Artist> { key ->
 			ArtistScreen(key.artist)
-		}
-		entry<Screen.AddToPlaylist>(metadata = DialogSceneStrategy.dialog()) { key ->
-			AddToPlaylistScreen(key.tracks, key.playlistToExclude)
-		}
-		entry<Screen.CreatePlaylist>(metadata = DialogSceneStrategy.dialog()) { key ->
-			CreatePlaylistScreen(key.tracks)
 		}
 
 		// settings

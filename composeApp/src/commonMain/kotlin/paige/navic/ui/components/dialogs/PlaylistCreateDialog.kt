@@ -1,4 +1,4 @@
-package paige.navic.ui.screens
+package paige.navic.ui.components.dialogs
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.input.TextFieldLineLimits
@@ -28,14 +28,17 @@ import paige.navic.data.models.Screen
 import paige.navic.icons.Icons
 import paige.navic.icons.outlined.PlaylistAdd
 import paige.navic.ui.components.common.FormButton
-import paige.navic.ui.components.dialogs.FormDialog
-import paige.navic.ui.viewmodels.CreatePlaylistViewModel
+import paige.navic.ui.viewmodels.PlaylistCreateDialogViewModel
 import paige.navic.utils.UiState
 
 @Composable
-fun CreatePlaylistScreen(
-	tracks: List<Song>,
-	viewModel: CreatePlaylistViewModel = viewModel(key = tracks.joinToString()) { CreatePlaylistViewModel(tracks) }
+fun PlaylistCreateDialog(
+	onDismissRequest: () -> Unit,
+	tracks: List<Song> = emptyList(),
+	navigateAfterwards: Boolean = true,
+	viewModel: PlaylistCreateDialogViewModel = viewModel(key = tracks.joinToString()) {
+		PlaylistCreateDialogViewModel(tracks)
+	}
 ) {
 	val ctx = LocalCtx.current
 	val backStack = LocalNavStack.current
@@ -44,9 +47,12 @@ fun CreatePlaylistScreen(
 	LaunchedEffect(Unit) {
 		viewModel.events.collect { event ->
 			when (event) {
-				is CreatePlaylistViewModel.Event.Dismiss -> {
-					if (backStack.lastOrNull() is Screen.CreatePlaylist) {
-						backStack.removeLastOrNull()
+				is PlaylistCreateDialogViewModel.Event.Dismiss -> {
+					onDismissRequest()
+					if (navigateAfterwards) {
+						if (backStack.contains(Screen.NowPlaying)) {
+							backStack.remove(Screen.NowPlaying)
+						}
 						backStack.add(Screen.Tracks(event.playlist, "playlists"))
 					}
 				}
@@ -55,7 +61,7 @@ fun CreatePlaylistScreen(
 	}
 
 	FormDialog(
-		onDismissRequest = {},
+		onDismissRequest = onDismissRequest,
 		icon = { Icon(Icons.Outlined.PlaylistAdd, null) },
 		title = { Text(stringResource(Res.string.title_create_playlist)) },
 		buttons = {
@@ -78,9 +84,7 @@ fun CreatePlaylistScreen(
 			FormButton(
 				onClick = {
 					ctx.clickSound()
-					if (backStack.lastOrNull() is Screen.CreatePlaylist) {
-						backStack.removeLastOrNull()
-					}
+					onDismissRequest()
 				},
 				enabled = state !is UiState.Loading,
 				content = { Text(stringResource(Res.string.action_cancel)) }

@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import paige.navic.data.session.SessionManager
 import paige.navic.utils.UiState
 
-class CreatePlaylistViewModel(
+class PlaylistCreateDialogViewModel(
 	private val tracks: List<Song>
 ) : ViewModel() {
 	private val _creationState = MutableStateFlow<UiState<Nothing?>>(UiState.Success(null))
