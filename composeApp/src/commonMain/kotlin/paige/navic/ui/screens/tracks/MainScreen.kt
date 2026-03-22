@@ -46,6 +46,7 @@ import paige.navic.ui.screens.tracks.components.TracksScreenTrackRow
 import paige.navic.ui.screens.tracks.components.tracksScreenMoreByArtistRow
 import paige.navic.ui.screens.tracks.components.tracksScreenTrackRowPlaceholder
 import paige.navic.ui.viewmodels.TracksViewModel
+import paige.navic.utils.LocalBottomBarScrollManager
 import paige.navic.utils.UiState
 import paige.navic.utils.fadeFromTop
 import paige.navic.utils.withoutTop
@@ -89,8 +90,9 @@ fun TracksScreen(
 			)
 		},
 		bottomBar = {
+			val scrollManager = LocalBottomBarScrollManager.current
 			if (Settings.shared.bottomBarVisibilityMode == BottomBarVisibilityMode.AllScreens) {
-				RootBottomBar(scrolled = viewModel.listState.lastScrolledForward)
+				RootBottomBar(scrolled = scrollManager.isTriggered)
 			}
 		}
 	) { contentPadding ->

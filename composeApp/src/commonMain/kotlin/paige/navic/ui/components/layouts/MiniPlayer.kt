@@ -72,7 +72,7 @@ import paige.navic.utils.rememberTrackPainter
 @Composable
 fun MiniPlayer(
 	modifier: Modifier = Modifier,
-	clicksEnabled: Boolean = true
+	enabled: Boolean = true
 ) {
 	val ctx = LocalCtx.current
 	val player = LocalMediaPlayer.current
@@ -147,19 +147,21 @@ fun MiniPlayer(
 		}
 	}
 
-	val enabled = playerState.currentTrack != null
+	val hasTrack = track != null
+	val isInteractive = enabled && hasTrack
 
 	Swiper(
 		onSwipeLeft = {
-			player.next()
+			if (isInteractive) player.next()
 		},
 		onSwipeRight = {
-			player.previous()
+			if (isInteractive) player.previous()
 		},
-		enabled = clicksEnabled
+		modifier = modifier,
+		enabled = isInteractive
 	) {
 		Box(
-			modifier = modifier
+			modifier = Modifier
 				.widthIn(max = if (detached) 600.dp else Dp.Unspecified)
 				.padding(bottom = outerPadding, start = outerPadding, end = outerPadding)
 				.align(Alignment.Center)
@@ -173,7 +175,8 @@ fun MiniPlayer(
 							alpha = 0.25f
 						)
 					)
-					.pointerInput(Unit) {
+					.pointerInput(isInteractive) {
+						if (!isInteractive) return@pointerInput
 						var totalDrag = 0f
 						detectVerticalDragGestures(
 							onVerticalDrag = { _, dragAmount ->
@@ -260,7 +263,7 @@ fun MiniPlayer(
 									player.pause()
 								}
 							},
-							enabled = enabled,
+							enabled = isInteractive,
 							colors = colors
 						) {
 							val painter = playPauseIconPainter(playerState.isPaused)
@@ -285,7 +288,7 @@ fun MiniPlayer(
 								ctx.clickSound()
 								player.next()
 							},
-							enabled = enabled,
+							enabled = isInteractive,
 							colors = colors
 						) {
 							Icon(
@@ -308,7 +311,7 @@ fun MiniPlayer(
 						MarqueeText(stringResource(Res.string.info_not_playing))
 					}
 				},
-				enabled = clicksEnabled
+				enabled = enabled
 			)
 			if (Settings.shared.miniPlayerProgressStyle == MiniPlayerProgressStyle.Visible
 				|| Settings.shared.miniPlayerProgressStyle == MiniPlayerProgressStyle.Seekable) {
@@ -346,7 +349,7 @@ fun MiniPlayer(
 							.then(
 								if (track != null
 									&& Settings.shared.miniPlayerProgressStyle == MiniPlayerProgressStyle.Seekable
-									&& clicksEnabled)
+									&& isInteractive)
 									Modifier.pointerInput(Unit) {
 										detectDragGestures(
 											onDragStart = {

@@ -71,6 +71,7 @@ import paige.navic.ui.components.layouts.NestedTopBar
 import paige.navic.ui.components.layouts.RootBottomBar
 import paige.navic.ui.components.layouts.artGridError
 import paige.navic.ui.viewmodels.SharesViewModel
+import paige.navic.utils.LocalBottomBarScrollManager
 import paige.navic.utils.UiState
 import paige.navic.utils.toHoursMinutesSeconds
 import paige.navic.utils.withoutTop
@@ -90,8 +91,9 @@ fun SharesScreen(
 	Scaffold(
 		topBar = { NestedTopBar({ Text(stringResource(Res.string.title_shares)) }) },
 		bottomBar = {
+			val scrollManager = LocalBottomBarScrollManager.current
 			if (Settings.shared.bottomBarVisibilityMode == BottomBarVisibilityMode.AllScreens) {
-				RootBottomBar(scrolled = viewModel.gridState.lastScrolledForward)
+				RootBottomBar(scrolled = scrollManager.isTriggered)
 			}
 		}
 	) { contentPadding ->
